@@ -1,0 +1,67 @@
+{% extends 'index.html' %}
+{% block content %}
+
+
+<div class="container py-4">
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Muster Summary</h2>
+        <p class="text-muted">{{ period }} ({{ start_date }} to {{ end_date }})</p>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 justify-content-center">
+                <div class="col-auto">
+                    <label for="period" class="visually-hidden">Select Muster Period:</label>
+                    <select name="period" id="period" class="form-select">
+                        <option value="1-10" {% if period == "1-10" %}selected{% endif %}>1 - 10</option>
+                        <option value="11-20" {% if period == "11-20" %}selected{% endif %}>11 - 20</option>
+                        <option value="21-end" {% if period == "21-end" %}selected{% endif %}>21 - End</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Show Summary</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if summary %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Farmer Name</th>
+                    <th>Average Fat (%)</th>
+                    <th>Average Rate (₹)</th>
+                    <th>Total Milk (L)</th>
+                    <th>Total Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in summary %}
+                <tr>
+                    <td>{{ row.farmer_name }}</td>
+                    <td>{{ row.avg_fat }}</td>
+                    <td>{{ row.avg_rate }}</td>
+                    <td>{{ row.total_milk }}</td>
+                    <td><strong>₹{{ row.total_amount }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center">
+        No data available for this muster period.
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Bootstrap JS (Optional if you need dropdowns or modals) -->
+
+
+
+{% endblock %}

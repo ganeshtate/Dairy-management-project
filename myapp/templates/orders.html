@@ -1,0 +1,41 @@
+{%extends 'index.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Feed Orders</h2>
+
+    {% if orders %}
+        <div class="row">
+            {% for order in orders %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        {% if order.product.image %}
+                            <img src="{{ order.product.image.url }}" class="card-img-top" alt="{{ order.product.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ order.product.name }}</h5>
+                            <p class="card-text">
+                                <strong>Farmer:</strong> {{ order.farmer.farmer_name }}<br>
+                                <strong>Quantity:</strong> {{ order.quantity }} units<br>
+                                <strong>Total Price:</strong> ₹{{ order.total_price }}<br>
+                                <strong>Order Date:</strong> {{ order.ordered_at|date:"d M Y H:i" }}<br>
+                                <strong>Status:</strong> 
+                                {% if order.is_delivered %}
+                                    Delivered
+                                {% else %}
+                                    Pending
+                                {% endif %}
+                            </p>
+                            <a href="{% url 'mark_as_delivered' order.id %}" class="btn btn-success">
+                                Mark as Delivered
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No orders placed yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

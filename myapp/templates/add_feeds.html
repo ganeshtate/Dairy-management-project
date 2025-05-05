@@ -1,0 +1,66 @@
+{% extends 'index.html'%}
+{% block content %}
+<!-- templates/feeds/add_feed.html -->
+<!-- templates/feeds/add_feed.html -->
+
+{% load static %}
+
+
+<div class="container mt-5">
+  {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+  {% endif %}
+  <h2 class="mb-4">Add Feed Product</h2>
+  <form method="POST" enctype="multipart/form-data" class="border p-4 rounded shadow-sm bg-light">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      <label for="name" class="form-label">Feed Name</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="animal_type" class="form-label">Animal Type</label>
+      <select class="form-select" id="animal_type" name="animal_type" required>
+        <option value="cow">Cow</option>
+        <option value="buffalo">Buffalo</option>
+        <option value="both">Both</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price (₹)</label>
+      <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="available_stock" class="form-label">Available Stock</label>
+      <input type="number" class="form-control" id="available_stock" name="available_stock" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Feed Image</label>
+      <input type="file" class="form-control" id="image" name="image" accept="image/*">
+    </div>
+<div class="d-flex">
+    <button type="submit" class="btn btn-primary">Add Feed</button>
+    <a href="{% url 'feed_list' %}">
+      <button type="button" class="btn btn-primary"> show  feeds</button>
+    </a>
+  </div>
+  </div>
+  </form>
+</div>
+
+
+{% endblock %}

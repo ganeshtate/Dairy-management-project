@@ -1,0 +1,158 @@
+{% extends 'index.html' %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Milk Collection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-label { font-weight: 600; }
+    .readonly-input { background-color: #f9f9f9; }
+  </style>
+</head>
+<body>
+<div class="container mt-5 bg-success ">
+  <h2 class="mb-4 text-center text-white">Milk Collection Entry</h2>
+
+  {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            <label for="df_code">Farmer DF Code:</label>
+            <input type="text" name="df_code" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label for="shift">Shift:</label>
+            <select name="shift" id="shift" class="form-control" required>
+                <option value="morning">Morning</option>
+                <option value="evening">Evening</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label for="animal_type">Animal Type:</label>
+            <select name="animal_type" id="animal_type" class="form-control" required>
+                <option value="cow">🐄 Cow</option>
+                <option value="buffalo">🐃 Buffalo</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="litre">Milk Litres:</label>
+            <input type="number" id="litre" name="litre" class="form-control" step="0.01" required>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label for="fat">Fat (%):</label>
+            <input type="number" id="fat" name="fat" class="form-control" step="0.1" required>
+        </div>
+        <div class="col-md-6">
+            <label for="snf">SNF (%):</label>
+            <input type="number" id="snf" name="snf" class="form-control" step="0.1" required>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label for="degree">Degree (°C):</label>
+            <input type="number" id="degree" name="degree" class="form-control" step="0.1" required>
+        </div>
+        <div class="col-md-6">
+            <label for="rate">Rate (₹):</label>
+            <input type="text" id="rate" name="rate" class="form-control" readonly>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label for="amount">Total Amount (₹):</label>
+            <input type="text" id="amount" name="amount" class="form-control" readonly>
+        </div>
+        <div class="col-md-6">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" class="form-control" readonly>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-4">Submit</button>
+</form>
+
+
+
+  
+  <script>
+    function calculateRate(fat, snf, degree, animalType) {
+      let rate = 0;
+  
+      // Cow milk rate logic
+      if (animalType === 'cow') {
+          if (fat === 3.5 && snf === 8.5 && degree === 29.5) {
+              rate = 35;
+          } else {
+              rate = (fat * 5) + (snf * 3) + (degree * 0.5);
+          }
+      }
+      
+      // Buffalo milk rate logic
+      if (animalType === 'buffalo') {
+          if (fat === 10.0 && snf === 8.5 && degree === 29.5) {
+              rate = 80;
+          } else {
+              rate = (fat * 7) + (snf * 3) + (degree * 0.5);
+          }
+      }
+  
+      return rate;
+  }
+  
+  function updateAmount() {
+      // Collect inputs
+      const fat = parseFloat(document.getElementById("fat").value) || 0;
+      const snf = parseFloat(document.getElementById("snf").value) || 0;
+      const degree = parseFloat(document.getElementById("degree").value) || 0;
+      const litre = parseFloat(document.getElementById("litre").value) || 0;
+      const animalType = document.getElementById("animal_type").value;
+  
+      // Calculate rate and amount
+      const rate = calculateRate(fat, snf, degree, animalType).toFixed(2);
+      const amount = (rate * litre).toFixed(2);
+  
+      // Update fields
+      document.getElementById("rate").value = rate;
+      document.getElementById("amount").value = amount;
+  
+      console.log(`Rate: ${rate}, Amount: ${amount}`);
+  }
+  
+  // Add event listeners
+  document.querySelectorAll("#fat, #snf, #degree, #litre, #animal_type").forEach(input => {
+      input.addEventListener("input", updateAmount);
+  });
+  
+  // Set today's date for the input
+  document.getElementById("date").value = new Date().toISOString().split("T")[0];
+  
+
+  </script>
+  
+    
+  
+
+</div></body>
+</html>
+
+{% endblock %}

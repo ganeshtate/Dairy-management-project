@@ -1,0 +1,332 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dairy Farma</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  </head>
+
+  <body>
+    <div class="container-fluid mb-5">
+      <div class="row bg-light py-3 align-items-center">
+        <!-- Logo and Navigation Links -->
+        <div
+          class="col-12 col-lg-8 d-flex flex-column flex-md-row align-items-center justify-content-center justify-content-md-start gap-3"
+        >
+          <!-- Logo -->
+          <div class="logo text-center text-md-start">
+            <img
+              src="/static/images/ulogo.png"
+              alt="Logo"
+              style="height: 120px; width: 120px"
+              class="img-fluid"
+            />
+          </div>
+
+          <!-- Links -->
+          <ul
+            class="nav flex-wrap justify-content-center justify-content-md-start"
+          >
+            <li class="nav-item">
+              <a
+                class="nav-link text-dark text-decoration-none {% if request.path == '/farmer/' %}active{% endif %}"
+                href="{% url 'farmer'%}"
+                >Farmer</a
+              >
+            </li>
+            <li class="nav-item ">
+
+              <a
+                class="nav-link text-dark text-decoration-none {% if request.path == '/collect_milk/' %}active{% endif %}"
+                href="{% url 'collect_milk'%}"
+                >Collect milk</a
+              >
+            </li>
+            <li class="nav-item" >
+              <a
+                class="nav-link text-dark text-decoration-none {% if request.path == '/generate-report/' %}active{% endif %}"
+                href="{% url 'generate_report' %}"
+                >Report</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark text-decoration-none {% if request.path == '/add_feeds/' %}active{% endif %}" href="{% url 'add_feeds' %}"
+                >Feed</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark text-decoration-none  {% if request.path == '/orders/' %}active{% endif %}" href="{% url 'orders' %}"
+                >orders</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark text-decoration-none  " href="{% url 'bill' %}"
+                >bill</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-12 col-lg-4 mt-3 mt-lg-0">
+          <div
+            class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-end align-items-center gap-2"
+          >
+            <input
+              type="text"
+              class="form-control w-100 w-sm-auto"
+              placeholder="Search..."
+            />
+            <button type="submit" class="btn btn-primary border-0">
+              <label class="mb-0">Search</label>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% block content %}
+    <div class="container-fluid p-5">
+      <img
+        src="/static/images/cow banner.png"
+        class="img-fluid w-100 h-25"
+        alt="Cow Banner"
+        style="height: 100%"
+      />
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <p class="text-capitalize">
+            Milk production is an excellent business opportunity for youth,
+            especially for those who are struggling to find traditional
+            employment. With the growing demand for dairy products in both rural
+            and urban areas, starting a small-scale dairy farm can provide a
+            steady income and long-term sustainability. It requires relatively
+            low initial investment compared to other businesses, and with proper
+            planning, training, and care for the animals, profits can be
+            substantial. Additionally, the government offers various subsidies,
+            loans, and training programs to support young entrepreneurs in the
+            dairy sector. Moreover, dairy farming encourages the adoption of
+            modern technologies such as automatic milking machines, digital
+            monitoring of livestock health, and efficient feed management
+            systems, making the business more productive and attractive to
+            tech-savvy youth. It also fosters community development by creating
+            job opportunities for others in the village, such as suppliers,
+            transporters, and veterinary services. As awareness about organic
+            and locally sourced food grows, young dairy entrepreneurs can also
+            explore niche markets like organic milk, ghee, and paneer.
+            Therefore, milk production not only promotes self-employment but
+            also contributes to rural development, food security, and economic
+            independence, making it a promising and future-ready venture for
+            today youth.
+          </p>
+        </div>
+        <div class="col-12 col-md-6">
+          <img
+            src="/static/images/stat.avif"
+            class="img-fluid w-100 custom-rounded-corners border"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row mt-5">
+        <div class="col-12 col-md-4">
+          <div class="card" style="height: 100%">
+            <img
+              src="/static/images/farmer1.avif"
+              class="card-img-top"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title">Improve Growth Insights</h5>
+              <p class="card-text">
+                "Balanced nutrition, clean water, and proper shelter are key to
+                a cow's healthy growth. A protein-rich diet, regular check-ups,
+                and a stress-free environment help improve their strength,
+                prevent disease, and boost productivity."
+              </p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card" style="height: 100%">
+            <img
+              src="/static/images/farmer2.webp"
+              class="card-img-top"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title">Milk Production Insights</h5>
+              <p class="card-text">
+                "Milk production depends on factors like proper feeding, clean
+                water, and good cow care. A healthy, well-fed cow produces more
+                milk. Regular milking, clean surroundings, and timely veterinary
+                check-ups also help increase milk quantity and quality."
+              </p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 col">
+          <div class="card" style="height: 100%">
+            <img
+              src="/static/images/farmer3.webp"
+              class="card-img-top"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title">Need of Good Envornment Insights</h5>
+              <p class="card-text">
+                "The environment around a cow plays a major role in milk
+                production. Clean, calm, and stress-free surroundings help cows
+                stay healthy and relaxed, which boosts milk yield. Proper
+                ventilation, comfortable resting space, and protection from
+                extreme weather also contribute to better milk quality and
+                quantity."
+              </p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row mt-5">
+        <div class="col">
+          <img class="w-100" src="/static/images/gdp.webp" alt="" />
+        </div>
+        <div class="col g-0 me-2">
+          <p>
+            Milk production contributes significantly to a country's national
+            GDP by boosting the agricultural sector, generating employment, and
+            creating value-added products. It supports livelihoods in rural
+            areas, provides jobs across various stages from farming to retail,
+            and strengthens exports through dairy products like milk powder,
+            cheese, and butter. The dairy industry also promotes rural
+            development, enhances nutrition, and improves the health of the
+            workforce, indirectly driving higher productivity. Overall, milk
+            production plays a crucial role in economic growth by contributing
+            to both domestic markets and international trade. In addition, the
+            sector encourages the use of modern farming techniques and
+            veterinary care, which improves the health and yield of cattle. This
+            leads to better quality milk and more efficient production
+            processes. Cooperative dairy models, especially in countries like
+            India, have empowered small farmers and women, allowing them to earn
+            a stable income and contribute to their communities. As the demand
+            for dairy products continues to rise both locally and globally,
+            investments in infrastructure, cold storage, and logistics are also
+            increasing, thereby creating more opportunities across various
+            industries. With continued innovation and policy support, milk
+            production remains a powerful engine for inclusive and sustainable
+            economic development.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid my-5">
+      <div
+        class="p-4 p-md-5 text-white rounded bg-success d-flex flex-column flex-md-row align-items-center justify-content-between"
+      >
+        <!-- Text Content -->
+        <div class="mb-3 mb-md-0">
+          <h2 class="fw-bold">🐄 Introducing Our New Cow Feed!</h2>
+          <p class="mb-0">
+            Boost your cattle's health and improve digestion with our specially
+            formulated feed. 100% natural, nutritious, and farmer-trusted!
+          </p>
+        </div>
+
+        <!-- Call to Action Button -->
+        <div>
+          <a href="{% url 'add_feeds' %}" class="btn btn-light text-success fw-bold mt-3 mt-md-0">
+            Learn More
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    <div class="footer">
+      <div class="row border-1 bg-light m-1 my-5">
+        <div class="col-12 col-md-6 col-lg-3">
+          <h3>Dairy Farma</h3>
+          <p>
+            A dairy farm plays a key role in milk production by providing proper
+            care and nutrition to cows. It ensures cows are fed a balanced diet,
+            kept in clean and comfortable environments, and regularly checked
+            for health. By maintaining proper milking schedules and hygienic
+            conditions, dairy farms help produce high-quality milk that meets
+            market demands.
+          </p>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+          <h3>Our Important Links</h3>
+          <ul class="list-group list-unstyled">
+            <li>
+              <a class="list-item text-decoration-none text-dark" href="#"
+                >About</a
+              >
+            </li>
+            <li>
+              <a class="list-item text-decoration-none text-dark" href="#"
+                >Service</a
+              >
+            </li>
+            <li>
+              <a class="list-item text-decoration-none text-dark" href="#"
+                >Contact</a
+              >
+            </li>
+            <li>
+              <a class="list-item text-decoration-none text-dark" href="#"
+                >Home</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 mb-3">
+          <h3>Our Insights</h3>
+          <p>
+            Explore our latest insights and updates. Stay informed and inspired
+            Click below to dive into our latest articles.
+          </p>
+          <a href="#" class="btn btn-primary">visit now</a>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3 mb-3">
+          <h3>Our Social Media Sights</h3>
+          <i class="bi bi-instagram me-2 fs-2"></i>
+          <i class="bi bi-facebook me-2 fs-2"></i>
+          <i class="bi bi-twitter me-2 fs-2"></i>
+          <i class="bi bi-pinterest me-2 fs-2"></i>
+        </div>
+        <hr />
+        <div class="copyright d-flex justify-content-evenly">
+          <div>
+            <p>copyright@2025 all rights reserved</p>
+          </div>
+          <div>
+            <a class="text-decoration-none text-dark" href=""
+              >Term and Condition</a
+            >
+            <a class="text-decoration-none text-dark" href="">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

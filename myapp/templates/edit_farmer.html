@@ -1,0 +1,69 @@
+{% extends 'index.html' %} {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <img
+        class="img-fluid w-100 h-100 rounded-1"
+        src="/static/images/banner1.jpg"
+        alt=""
+      />
+    </div>
+    <div class="col">
+    
+      <h3 class="mb-4 text-center">Edit Farmer</h3>
+
+      <form method="POST" action="{% url 'update_farmer' %}">
+          {% csrf_token %}
+          
+          <div class="container">
+              <div class="row justify-content-center">
+                  <div class="col-md-8">
+                      
+                      <!-- DF Code (Read-Only) -->
+                      <div class="mb-3">
+                          <label for="df_code" class="form-label">DF Code</label>
+                          <input type="text" class="form-control" id="df_code" name="df_code" value="{{ farmer.df_code }}"  />
+                      </div>
+      
+                      <!-- Farmer Name -->
+                      <div class="mb-3">
+                          <label for="farmer_name" class="form-label">Farmer Name</label>
+                          <input type="text" class="form-control" id="farmer_name" name="farmer_name" value="{{ farmer.name }}" required />
+                      </div>
+      
+                      <!-- Contact -->
+                      <div class="mb-3">
+                          <label for="contact" class="form-label">Contact</label>
+                          <input type="text" class="form-control" id="contact" name="contact" value="{{ farmer.contact }}" required />
+                      </div>
+      
+                      <!-- Address -->
+                      <div class="mb-3">
+                          <label for="address" class="form-label">Address</label>
+                          <textarea class="form-control" id="address" name="address" rows="3" required>{{ farmer.address }}</textarea>
+                      </div>
+      
+                      <!-- Date -->
+                      <div class="mb-3">
+                          <label for="date" class="form-label">Date</label>
+                          <input type="date" class="form-control" id="date" name="date" value="{{ farmer.date }}" required />
+                      </div>
+      
+                      <!-- Submit Button -->
+                      <div class="d-flex justify-content-between">
+                          <button type="submit" class="btn btn-success">Update</button>
+                          <a href="{% url 'show_farmers' %}">
+                              <button type="button" class="btn btn-secondary">Cancel</button>
+                          </a>
+                      </div>
+      
+                  </div>
+              </div>
+          </div>
+      </form>
+      
+
+    </div>
+  </div>
+</div>
+{% endblock %}
