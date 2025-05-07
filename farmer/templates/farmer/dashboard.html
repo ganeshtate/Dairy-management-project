@@ -1,146 +1,157 @@
 {% extends 'farmer/home.html' %}
-{% load custom_filters %}
+{% load static %}
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Milk Collection Dashboard</h2>
+<body class="bg-light">
 
-    <!-- Muster Period Selection -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h4>Select Muster Period</h4>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group row">
-                    <label for="period" class="col-sm-3 col-form-label">Muster Period:</label>
-                    <div class="col-sm-6">
-                        <select name="period" id="period" class="form-control" required>
-                            <option value="">-- Select Period --</option>
-                            <option value="1-10" {% if period == '1-10' %}selected{% endif %}>1st to 10th</option>
-                            <option value="11-20" {% if period == '11-20' %}selected{% endif %}>11th to 20th</option>
-                            <option value="21-end" {% if period == '21-end' %}selected{% endif %}>21st to End of Month</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="submit" class="btn btn-primary btn-block">Generate Report</button>
-                    </div>
+<div class="container mt-5">
+    <h2 class="mb-4">Welcome, {{ farmer.farmer_name }}</h2>
+    
+    <div class="alert alert-info">
+        Muster Period: <strong>{{ start_date }}</strong> to <strong>{{ end_date }}</strong>
+    </div>
+
+    <!-- Cow Milk Collection Details -->
+    <div class="mt-5">
+        <h4>Cow Daily Milk Collection Details</h4>
+        {% if milk_entries %}
+            <table class="table table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Shift</th>
+                        <th>Animal Type</th>
+                        <th>Litre</th>
+                        <th>Fat</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in milk_entries %}
+                        {% if entry.animal_type == 'cow' %}
+                        <tr>
+                            <td>{{ entry.shift }}</td>
+                            <td>{{ entry.animal_type }}</td>
+                            <td>{{ entry.litre|floatformat:2 }}</td>
+                            <td>{{ entry.fat|floatformat:2 }}</td>
+                            <td>₹{{ entry.rate|floatformat:2 }}</td>
+                            <td>₹{{ entry.amount|floatformat:2 }}</td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="6">No cow milk collection found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <!-- Buffalo Milk Collection Details -->
+    <div class="mt-5">
+        <h4>Buffalo Daily Milk Collection Details</h4>
+        {% if milk_entries %}
+            <table class="table table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Shift</th>
+                        <th>Animal Type</th>
+                        <th>Litre</th>
+                        <th>Fat</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in milk_entries %}
+                        {% if entry.animal_type == 'buffalo' %}
+                        <tr>
+                            <td>{{ entry.shift }}</td>
+                            <td>{{ entry.animal_type }}</td>
+                            <td>{{ entry.litre|floatformat:2 }}</td>
+                            <td>{{ entry.fat|floatformat:2 }}</td>
+                            <td>₹{{ entry.rate|floatformat:2 }}</td>
+                            <td>₹{{ entry.amount|floatformat:2 }}</td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="6">No buffalo milk collection found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <!-- Feed Orders -->
+    <div class="mt-4">
+        <h4>Feed Orders</h4>
+        <table class="table table-striped table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in farmer.feedorder_set.all %}
+                    {% if order.ordered_at.date >= start_date %}
+                        {% if order.ordered_at.date <= end_date %}
+                            <tr>
+                                <td>{{ order.ordered_at.date }}</td>
+                                <td>{{ order.product_name }}</td>
+                                <td>{{ order.quantity }}</td>
+                                <td>₹{{ order.total_price|floatformat:2 }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% empty %}
+                    <tr><td colspan="4">No feed orders in this period.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <!-- Cow Summary -->
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">Cow Milk Summary</div>
+                <div class="card-body">
+                    <p><strong>Total Litre:</strong> {{ dashboard_data.cow.total_litre|floatformat:2 }}</p>
+                    <p><strong>Avg Fat:</strong> {{ dashboard_data.cow.avg_fat|floatformat:2 }}</p>
+                    <p><strong>Avg Rate:</strong> ₹{{ dashboard_data.cow.avg_rate|floatformat:2 }}</p>
+                    <p><strong>Total Amount:</strong> ₹{{ dashboard_data.cow.total_amount|floatformat:2 }}</p>
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <!-- Buffalo Summary -->
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">Buffalo Milk Summary</div>
+                <div class="card-body">
+                    <p><strong>Total Litre:</strong> {{ dashboard_data.buffalo.total_litre|floatformat:2 }}</p>
+                    <p><strong>Avg Fat:</strong> {{ dashboard_data.buffalo.avg_fat|floatformat:2 }}</p>
+                    <p><strong>Avg Rate:</strong> ₹{{ dashboard_data.buffalo.avg_rate|floatformat:2 }}</p>
+                    <p><strong>Total Amount:</strong> ₹{{ dashboard_data.buffalo.total_amount|floatformat:2 }}</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    {% if show_results %}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h4>Report Summary</h4>
-            <span>{{ start_date|date:"d M Y" }} to {{ end_date|date:"d M Y" }}</span>
-        </div>
+    <!-- Final Summary -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-dark text-white">Final Summary</div>
         <div class="card-body">
-            <!-- Farmer Details -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <h5>Farmer Details</h5>
-                    <p><strong>Name:</strong> {{ farmer.farmer_name }}</p>
-                    <p><strong>DF Code:</strong> {{ farmer.df_code }}</p>
-                </div>
-                <div class="col-md-6">
-                    <h5>Financial Summary</h5>
-                    <p><strong>Total Milk Amount:</strong> ₹{{ grand_total.amount|floatformat:2 }}</p>
-                    <p><strong>Feed Deductions:</strong> ₹{{ feed_total|floatformat:2 }}</p>
-                    <p class="font-weight-bold"><strong>Net Payable:</strong> ₹{{ grand_total.net_amount|floatformat:2 }}</p>
-                </div>
-            </div>
-
-            <!-- Cow Milk Table -->
-            <h5 class="mt-4">Cow Milk Collection</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="thead-light">
-                        <tr>
-                            <th rowspan="2">Date</th>
-                            <th colspan="3" class="text-center">Morning</th>
-                            <th colspan="3" class="text-center">Evening</th>
-                        </tr>
-                        <tr>
-                            <th>Litre</th>
-                            <th>Fat</th>
-                            <th>Amount</th>
-                            <th>Litre</th>
-                            <th>Fat</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for date in report_data %}
-                        <tr>
-                            <td>{{ date|date:"d M" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'cow'|get_item:'morning'|get_item:'litre'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'cow'|get_item:'morning'|get_item:'fat'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'cow'|get_item:'morning'|get_item:'amount'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'cow'|get_item:'evening'|get_item:'litre'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'cow'|get_item:'evening'|get_item:'fat'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'cow'|get_item:'evening'|get_item:'amount'|default:"-" }}</td>
-                        </tr>
-                        {% endfor %}
-                        <tr class="font-weight-bold bg-light">
-                            <td>Total/Avg</td>
-                            <td>{{ totals.cow.morning.litre|floatformat:2 }}</td>
-                            <td>{{ totals.cow.morning.avg_fat|floatformat:2 }}</td>
-                            <td>{{ totals.cow.morning.amount|floatformat:2 }}</td>
-                            <td>{{ totals.cow.evening.litre|floatformat:2 }}</td>
-                            <td>{{ totals.cow.evening.avg_fat|floatformat:2 }}</td>
-                            <td>{{ totals.cow.evening.amount|floatformat:2 }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Buffalo Milk Table -->
-            <h5 class="mt-4">Buffalo Milk Collection</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="thead-light">
-                        <tr>
-                            <th rowspan="2">Date</th>
-                            <th colspan="3" class="text-center">Morning</th>
-                            <th colspan="3" class="text-center">Evening</th>
-                        </tr>
-                        <tr>
-                            <th>Litre</th>
-                            <th>Fat</th>
-                            <th>Amount</th>
-                            <th>Litre</th>
-                            <th>Fat</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for date in report_data %}
-                        <tr>
-                            <td>{{ date|date:"d M" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'buffalo'|get_item:'morning'|get_item:'litre'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'buffalo'|get_item:'morning'|get_item:'fat'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'buffalo'|get_item:'morning'|get_item:'amount'|default:"-"|floatformat:2 }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'buffalo'|get_item:'evening'|get_item:'litre'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'buffalo'|get_item:'evening'|get_item:'fat'|default:"-" }}</td>
-                            <td>{{ report_data|get_item:date|get_item:'buffalo'|get_item:'evening'|get_item:'amount'|default:"-" }}</td>
-                        </tr>
-                        {% endfor %}
-                        <tr class="font-weight-bold bg-light">
-                            <td>Total/Avg</td>
-                            <td>{{ totals.buffalo.morning.litre|floatformat:2 }}</td>
-                            <td>{{ totals.buffalo.morning.avg_fat|floatformat:2 }}</td>
-                            <td>{{ totals.buffalo.morning.amount|floatformat:2 }}</td>
-                            <td>{{ totals.buffalo.evening.litre|floatformat:2 }}</td>
-                            <td>{{ totals.buffalo.evening.avg_fat|floatformat:2 }}</td>
-                            <td>{{ totals.buffalo.evening.amount|floatformat:2 }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <p><strong>Total Milk (Cow + Buffalo):</strong> {{ dashboard_data.total_litre|floatformat:2 }} litres</p>
+            <p><strong>Avg Fat (Overall):</strong> {{ dashboard_data.avg_fat|floatformat:2 }}</p>
+            <p><strong>Avg Rate (Overall):</strong> ₹{{ dashboard_data.avg_rate|floatformat:2 }}</p>
+            <p><strong>Total Milk Amount:</strong> ₹{{ dashboard_data.total_amount|floatformat:2 }}</p>
+            <p><strong>Feed Deduction:</strong> ₹{{ dashboard_data.ordered_feed_amount|floatformat:2 }}</p>
+            <hr>
+            <h5><strong>Final Payable Amount:</strong> ₹{{ dashboard_data.final_amount|floatformat:2 }}</h5>
         </div>
     </div>
-    {% endif %}
+
 </div>
+
 {% endblock %}

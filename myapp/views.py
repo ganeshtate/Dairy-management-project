@@ -64,7 +64,7 @@ def delete(request):
     return redirect('show_farmers') 
 def edit_farmer(request):
     df_code=request.GET['df_code']
-    farmer_name='not_founnd'
+    farmer_name='not_found'
     for data in Addfarmer.objects.filter(df_code=df_code):
         farmer_name=data.farmer_name
         contact=data.contact

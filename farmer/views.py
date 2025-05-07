@@ -13,7 +13,7 @@ from statistics import mean
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.utils import timezone 
-
+from calendar import monthrange
 
 
 # Create your views here.
@@ -32,8 +32,7 @@ def login(request):
 
     return render(request, 'farmer/farmer_login.html')  # Correct path
 
-
-
+from collections import defaultdict
 
 def dashboard(request):
     farmer_id = request.session.get('farmer_id')
@@ -47,7 +46,7 @@ def dashboard(request):
     today = timezone.now().date()
     day = today.day
 
-    # Determine current muster period (same as before)
+    # Determine muster period
     if day <= 10:
         start_date = today.replace(day=1)
         end_date = today.replace(day=10)
@@ -59,20 +58,27 @@ def dashboard(request):
         next_month = today.replace(day=28) + datetime.timedelta(days=4)
         end_date = next_month - datetime.timedelta(days=next_month.day)
 
-    # Fetch milk entries for this farmer within the muster period
+    # Fetch milk and feed data
     milk_entries = MilkCollection.objects.filter(
         farmer_id=farmer_id,
         date__range=(start_date, end_date)
     ).order_by('date', 'shift')
 
-    # Example: fetch the ordered feed amount (you will need to adjust based on your actual model)
-    ordered_feed_amount = FeedOrder.objects.filter(farmer_id=farmer_id, ordered_at__range=(start_date, end_date)).aggregate(Sum('total_price'))['total_price__sum'] or 0
+    feed_orders = FeedOrder.objects.filter(
+        farmer_id=farmer_id,
+        ordered_at__range=(start_date, end_date)
+    ).order_by('ordered_at')
 
+    ordered_feed_amount = feed_orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
 
-    # Process milk entries to calculate the required data
+    # Group milk entries by date
+    daily_milk = defaultdict(list)
+    for entry in milk_entries:
+        daily_milk[entry.date].append(entry)
+
     cow_data = {'total_litre': 0, 'total_fat': 0, 'total_rate': 0, 'total_amount': 0}
     buffalo_data = {'total_litre': 0, 'total_fat': 0, 'total_rate': 0, 'total_amount': 0}
-    
+
     for entry in milk_entries:
         if entry.animal_type == 'cow':
             cow_data['total_litre'] += entry.litre
@@ -85,7 +91,6 @@ def dashboard(request):
             buffalo_data['total_rate'] += entry.rate
             buffalo_data['total_amount'] += entry.amount
 
-    # Calculate averages
     if cow_data['total_litre'] > 0:
         cow_data['avg_fat'] = cow_data['total_fat'] / cow_data['total_litre']
         cow_data['avg_rate'] = cow_data['total_rate'] / cow_data['total_litre']
@@ -100,16 +105,12 @@ def dashboard(request):
         buffalo_data['avg_fat'] = 0
         buffalo_data['avg_rate'] = 0
 
-    # Calculate total amounts and averages
     total_litre = cow_data['total_litre'] + buffalo_data['total_litre']
     avg_fat = (cow_data['total_fat'] + buffalo_data['total_fat']) / total_litre if total_litre > 0 else 0
     avg_rate = (cow_data['total_rate'] + buffalo_data['total_rate']) / total_litre if total_litre > 0 else 0
     total_amount = cow_data['total_amount'] + buffalo_data['total_amount']
+    final_amount = float(total_amount) - float(ordered_feed_amount)
 
-    # Final amount after feed deduction
-    final_amount =float( total_amount )- float(ordered_feed_amount)
-
-    # Prepare dashboard data
     dashboard_data = {
         'cow': cow_data,
         'buffalo': buffalo_data,
@@ -124,8 +125,11 @@ def dashboard(request):
     context = {
         'farmer': farmer,
         'dashboard_data': dashboard_data,
+        'milk_entries': milk_entries,
+        'feed_orders': feed_orders,
         'start_date': start_date,
-        'end_date': end_date
+        'end_date': end_date,
+        'daily_milk': dict(daily_milk)  # Pass the grouped milk data
     }
 
     return render(request, 'farmer/dashboard.html', context)
